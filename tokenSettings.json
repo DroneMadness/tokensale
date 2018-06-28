@@ -4,7 +4,12 @@
     "maxTokenSupply" : 4000000e18,
     "decimals" : 18,
 
-    "crowdsaleCap" : 2400000e18,
+    "presaleCap" : 3200e18,
+    "presaleOpeningTime" : 1533081600,
+    "presaleClosingTime" : 1535759940,
+    "presaleRate" : 750,
+
+    "crowdsaleCap" : 3600e18,
     "crowdsaleGoal" : 50e18,
     "crowdsaleOpeningTime" : 1535760000, 
     "crowdsaleClosingTime" : 1546300740,

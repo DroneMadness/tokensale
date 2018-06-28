@@ -19,11 +19,6 @@ contract('DroneMadnessCrowdsale', function(accounts) {
     let sale;
     let currentTime = Math.floor(Date.now() / 1000);
     
-// - Create 2x 20% extra BPT (40%) based on total sold BPT (effectively its 2x 14,3% percent)
-// - The extra BPT mentioned above is created after all tokensales are finished (end of crowdsale)
-// - Contract should send these amounts to 2 different multisig contracts. (MultiSig Team + Shop)
-// - The BPT amount in the pre-sale should be taken into account when creating the additional allocations of 20% and 20% because they are based on TOTAL sold BPT.
-
     describe("Deployment", function() {
 
         it ('should be possible to create a new Crowdsale contract', async() => { 
