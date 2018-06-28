@@ -1,0 +1,14 @@
+{
+    "name" : "Drone Madness Token",
+    "symbol" : "DRNMD",
+    "maxTokenSupply" : 4000000e18,
+    "decimals" : 18,
+
+    "crowdsaleCap" : 2400000e18,
+    "crowdsaleGoal" : 50e18,
+    "crowdsaleOpeningTime" : 1535760000, 
+    "crowdsaleClosingTime" : 1546300740,
+    "crowdsaleRate" : 500,
+
+    "fundWallet" : "0x5fec163e04d335edc0cd52b29f42cac765e73719"
+}

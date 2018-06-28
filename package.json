@@ -1,0 +1,37 @@
+{
+  "name": "dronemadness-tokensale",
+  "version": "1.0.0",
+  "description": "Drone Madness Token Sale",
+  "files": [
+    "contracts",
+    "test"
+  ],
+  "scripts": {
+    "ganache": "ganache-cli --defaultBalanceEther 500",
+    "test": "truffle test",
+    "console": "truffle console"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DroneMadness/tokensale.git"
+  },
+  "keywords": [
+    "solidity",
+    "ethereum",
+    "smart",
+    "contracts",
+    "security",
+    "erc20"
+  ],
+  "author": "Galin Dinkov <info@galindinkov.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DroneMadness/tokensale/issues"
+  },
+  "homepage": "https://github.com/DroneMadness/tokensale#readme",
+  "dependencies": {
+    "truffle": "^4.0.4",
+    "truffle-hdwallet-provider": "0.0.3",
+    "zeppelin-solidity": "1.10.0"
+  }
+}
