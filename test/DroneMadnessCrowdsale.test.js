@@ -1,5 +1,6 @@
 const assertThrows = require("./utils/assertThrows.js");
 const timeTravel = require("./utils/timeTravel.js");
+const TokenPool = artifacts.require('./TokenPool.sol')
 const DroneMadnessToken = artifacts.require('./DroneMadnessToken.sol')
 const DroneMadnessCrowdsale = artifacts.require('./DroneMadnessCrowdsale.sol')
 
@@ -13,6 +14,10 @@ contract('DroneMadnessCrowdsale', function(accounts) {
         user2,
         whitelistedUser,
         notlistedUser,
+        advisor1,
+        advisor2,
+        airdrop1,
+        airdrop2
     ] = accounts;
 
     let token;
@@ -37,8 +42,21 @@ contract('DroneMadnessCrowdsale', function(accounts) {
                 settings.fundWallet, 
                 token.address);
             assert.isNotNull(sale);
+
+            // Transfer token ownership to the sale
+            let tx = await token.transferOwnership(sale.address);
+            let newOwner = await token.owner();
+            assert.strictEqual('OwnershipTransferred', tx.logs[0].event);
+            assert.strictEqual(newOwner, sale.address);
+
+            // Perform initial distribution
+            await sale.doInitialDistribution(
+                settings.teamWallet,
+                settings.prizePool,
+                settings.reservePool
+            );
         })
-    })
+   })
     
     describe("Initial settings", function() {
 
@@ -60,6 +78,37 @@ contract('DroneMadnessCrowdsale', function(accounts) {
         it ('should have a hardcap of ' + settings.crowdsaleCap / (1e18) + ' ETH (' + settings.crowdsaleCap + ' wei)', async() => { 
             let cap = await sale.cap();
             assert.strictEqual(cap.toNumber(), settings.crowdsaleCap);
+        })
+
+        it ('should have distributed the tokens properly', async() => { 
+            let teamTokens = await sale.TEAM_TOKENS();
+            let teamWallet = await sale.teamWallet();
+            let teamBalance = await token.balanceOf(teamWallet);
+            let expectedTeamBalance = settings.maxTokenSupply * teamTokens.toNumber() / 100;
+            assert.strictEqual(expectedTeamBalance, teamBalance.toNumber());
+
+            let prizeTokens = await sale.PRIZE_TOKENS();
+            let prizeBalance = await token.balanceOf(settings.prizePool);
+            let expectedPrizeBalance = settings.maxTokenSupply * prizeTokens.toNumber() / 100;
+            assert.strictEqual(expectedPrizeBalance, prizeBalance.toNumber());
+
+            let advisorTokens = await sale.ADVISOR_TOKENS();
+            let advisorPool = await sale.advisorPool();
+            let advisorBalance = await token.balanceOf(advisorPool);
+            let expectedAdvisorBalance = settings.maxTokenSupply * advisorTokens.toNumber() / 100;
+            assert.strictEqual(expectedAdvisorBalance, advisorBalance.toNumber());
+
+            let airdropTokens = await sale.AIRDROP_TOKENS();
+            let airdropPool = await sale.airdropPool();
+            let airdropBalance = await token.balanceOf(airdropPool);
+            let expectedAirdropBalance = settings.maxTokenSupply * airdropTokens.toNumber() / 100;
+            assert.strictEqual(expectedAirdropBalance, airdropBalance.toNumber());
+
+            let reserveTokens = await sale.RESERVE_TOKENS();
+            let reservePool = await sale.reservePool();
+            let reserveBalance = await token.balanceOf(reservePool);
+            let expectedReserveBalance = settings.maxTokenSupply * reserveTokens.toNumber() / 100;
+            assert.strictEqual(expectedReserveBalance, reserveBalance.toNumber());
         })
     })
     
@@ -120,14 +169,6 @@ contract('DroneMadnessCrowdsale', function(accounts) {
             let originalCap = settings.crowdsaleCap;
             await sale.setRate(originalRate, originalCap, {from: owner});
         })
-        
-        it ('should be possible to transfer token ownership to this contract address', async() => { 
-            
-            let tx = await token.transferOwnership(sale.address);
-            let newOwner = await token.owner();
-            assert.strictEqual('OwnershipTransferred', tx.logs[0].event);
-            assert.strictEqual(newOwner, sale.address);
-        })        
     })
 
     describe("Whitelist", function() {
@@ -160,8 +201,41 @@ contract('DroneMadnessCrowdsale', function(accounts) {
             assert.isFalse(whitelisted);
         })                  
     })
+
+    describe("Airdrops and Allocations", function() { 
+
+        it ('should be possible to allocate tokens to advisor', async() => { 
+
+            let advisorPool = TokenPool.at(await sale.advisorPool());
+            let cap = await advisorPool.cap();
+            console.log(advisorPool, cap);
+
+            let amount1 = web3.toWei(1000, 'ether');
+            let amount2 = web3.toWei(2000, 'ether');
+            await sale.allocateAdvisorTokens([advisor1, advisor2], [amount1, amount2]);
+            let balance1 = await token.balanceOf(advisor1);
+            let balance2 = await token.balanceOf(advisor2);
+            assert.strictEqual(balance1.toNumber(), amount1.toNumber());
+            assert.strictEqual(balance2.toNumber(), amount2.toNumber());
+
+            let paused = await token.paused();
+            assert.isTrue(paused);
+        })
+
+        /*it ('should be possible to airdrop tokens', async() => { 
+            let amount = web3.toWei(100, 'ether');
+            await sale.airdropTokens([airdrop1, airdrop2], amount);
+            let balance1 = await token.balanceOf(airdrop1);
+            let balance2 = await token.balanceOf(airdrop2);
+            assert.strictEqual(balance1.toNumber(), amount.toNumber());
+            assert.strictEqual(balance2.toNumber(), amount.toNumber());
+
+            let paused = await token.paused();
+            assert.isTrue(paused);
+        })*/
+    })
     
-    describe("Funding", function() { 
+    /*describe("Funding", function() { 
 
         it ('should NOT be possible to purchase tokens before the crowdsale starts', async() => { 
             let amount = web3.toWei(1, 'ether');
@@ -282,5 +356,5 @@ contract('DroneMadnessCrowdsale', function(accounts) {
             let ownerBalanceAfter = (await web3.eth.getBalance(settings.fundWallet)).toNumber();
             assert.strictEqual(ownerBalanceAfter, ownerBalanceBefore + weiRaised);
         })
-    })
+    })*/
 })

@@ -81,7 +81,7 @@ contract DroneMadnessPresale is
         return true;
     }
 
-    function resetTokenOwnership() onlyOwner public { 
-        Ownable(token).transferOwnership(owner);
+    function transferTokenOwnership(address newOner) onlyOwner public { 
+        Ownable(token).transferOwnership(newOner);
     }
 }
