@@ -36,9 +36,9 @@ contract DroneMadnessCrowdsale is
     ]; 
     
     // Min investment
-    uint256 public minimalInvestmentInWei = 0.05 ether;
+    uint256 public minInvestmentInWei;
     // Max individual investment
-    uint256 public maxInvestmentInWei = 100 ether;
+    uint256 public maxInvestmentInWei;
     
     mapping (address => uint256) internal invested;
 
@@ -80,6 +80,8 @@ contract DroneMadnessCrowdsale is
         uint256 _openingTime, 
         uint256 _closingTime, 
         uint256 _rate, 
+        uint256 _minInvestmentInWei,
+        uint256 _maxInvestmentInWei,
         address _wallet, 
         DroneMadnessToken _token) 
         Crowdsale(_rate, _wallet, _token)
@@ -88,6 +90,8 @@ contract DroneMadnessCrowdsale is
         RefundableCrowdsale(_goal) public {
         require(_goal <= _cap);
         initialRate = _rate;
+        minInvestmentInWei = _minInvestmentInWei;
+        maxInvestmentInWei = _maxInvestmentInWei;
     }
 
     function updateRate() external onlyOwner {
@@ -108,7 +112,7 @@ contract DroneMadnessCrowdsale is
     */
     function _preValidatePurchase(address _beneficiary, uint256 _weiAmount) internal {
         super._preValidatePurchase(_beneficiary, _weiAmount);
-        require(_weiAmount >= minimalInvestmentInWei);
+        require(_weiAmount >= minInvestmentInWei);
         require(invested[_beneficiary].add(_weiAmount) <= maxInvestmentInWei);
         require(!paused);
     }

@@ -31,6 +31,7 @@ contract('DroneMadnessPresale', function(accounts) {
                 settings.presaleOpeningTime, 
                 settings.presaleClosingTime, 
                 settings.presaleRate, 
+                settings.presaleMinInvestmentInWei,
                 settings.fundWallet, 
                 token.address);
             assert.isNotNull(sale);
@@ -68,7 +69,7 @@ contract('DroneMadnessPresale', function(accounts) {
             assert.strictEqual('CurrentRateChange', tx.logs[0].event);
             assert.strictEqual(newRate, tx.logs[0].args.rate.toNumber());
             assert.strictEqual(newCap, tx.logs[0].args.cap.toNumber());
-            assert.strictEqual(newMinInvestment, tx.logs[0].args.minimalInvestmentInWei.toNumber());
+            assert.strictEqual(newMinInvestment, tx.logs[0].args.minInvestmentInWei.toNumber());
             
             let updatedRate = await sale.rate();
             assert.strictEqual(newRate, updatedRate.toNumber());
@@ -76,7 +77,7 @@ contract('DroneMadnessPresale', function(accounts) {
             let updatedCap = await sale.cap();
             assert.strictEqual(newCap, updatedCap.toNumber());
 
-            let updatedMinInvestment = await sale.minimalInvestmentInWei();
+            let updatedMinInvestment = await sale.minInvestmentInWei();
             assert.strictEqual(newMinInvestment, updatedMinInvestment.toNumber());
         })
         
@@ -174,8 +175,8 @@ contract('DroneMadnessPresale', function(accounts) {
         })
 
         it ('should NOT be possible user to purchase tokens below the minimum', async() => { 
-            let minimalInvestmentInWei = await sale.minimalInvestmentInWei();
-            let amount = minimalInvestmentInWei.minus(1);
+            let minInvestmentInWei = await sale.minInvestmentInWei();
+            let amount = minInvestmentInWei.minus(1);
             await assertThrows(sale.sendTransaction({value: amount, from: whitelistedUser, gas: 2000000}));
         })
 

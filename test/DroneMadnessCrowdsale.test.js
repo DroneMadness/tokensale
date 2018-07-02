@@ -32,6 +32,8 @@ contract('DroneMadnessCrowdsale', function(accounts) {
                 settings.crowdsaleOpeningTime, 
                 settings.crowdsaleClosingTime, 
                 settings.crowdsaleRate, 
+                settings.crowdsaleMinInvestmentInWei,
+                settings.crowdsaleMaxInvestmentInWei,
                 settings.fundWallet, 
                 token.address);
             assert.isNotNull(sale);
@@ -189,8 +191,8 @@ contract('DroneMadnessCrowdsale', function(accounts) {
         })
 
         it ('should NOT be possible user to purchase tokens below the minimum', async() => { 
-            let minimalInvestmentInWei = await sale.minimalInvestmentInWei();
-            let amount = minimalInvestmentInWei.minus(1);
+            let minInvestmentInWei = await sale.minInvestmentInWei();
+            let amount = minInvestmentInWei.minus(1);
             await assertThrows(sale.sendTransaction({value: amount, from: whitelistedUser, gas: 2000000}));
         })
 

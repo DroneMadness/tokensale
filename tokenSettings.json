@@ -8,12 +8,15 @@
     "presaleOpeningTime" : 1533081600,
     "presaleClosingTime" : 1535759940,
     "presaleRate" : 750,
+    "presaleMinInvestmentInWei" : 0.1e18,
 
     "crowdsaleCap" : 3600e18,
     "crowdsaleGoal" : 50e18,
     "crowdsaleOpeningTime" : 1535760000, 
     "crowdsaleClosingTime" : 1546300740,
     "crowdsaleRate" : 500,
+    "crowdsaleMinInvestmentInWei" : 0.05e18,
+    "crowdsaleMaxInvestmentInWei" : 60e18,
 
     "fundWallet" : "0x5fec163e04d335edc0cd52b29f42cac765e73719"
 }

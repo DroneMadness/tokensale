@@ -17,6 +17,8 @@ module.exports = function(deployer, network, accounts) {
                 settings.crowdsaleOpeningTime, 
                 settings.crowdsaleClosingTime, 
                 settings.crowdsaleRate, 
+                settings.crowdsaleMinInvestmentInWei,
+                settings.crowdsaleMaxInvestmentInWei,
                 settings.fundWallet, 
                 DroneMadnessToken.address);
         });

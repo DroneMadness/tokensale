@@ -20,7 +20,7 @@ contract DroneMadnessPresale is
     using SafeMath for uint256;
 
     // Min investment
-    uint256 public minimalInvestmentInWei = 0.05 ether;
+    uint256 public minInvestmentInWei;
     
     mapping (address => uint256) internal invested;
 
@@ -30,9 +30,9 @@ contract DroneMadnessPresale is
      * Event triggered when changing the current rate on different stages
      * @param rate new rate
      * @param cap new cap
-     * @param minimalInvestmentInWei new minimalInvestmentInWei
+     * @param minInvestmentInWei new minInvestmentInWei
      */
-    event CurrentRateChange(uint256 rate, uint256 cap, uint256 minimalInvestmentInWei);
+    event CurrentRateChange(uint256 rate, uint256 cap, uint256 minInvestmentInWei);
 
     /**
      * @dev Contract constructor
@@ -48,11 +48,13 @@ contract DroneMadnessPresale is
         uint256 _openingTime, 
         uint256 _closingTime, 
         uint256 _rate, 
+        uint256 _minInvestmentInWei,
         address _wallet, 
         DroneMadnessToken _token) 
         Crowdsale(_rate, _wallet, _token)
         CappedCrowdsale(_cap)
         TimedCrowdsale(_openingTime, _closingTime) public {
+        _minInvestmentInWei = minInvestmentInWei;
     }
 
     /**
@@ -62,7 +64,7 @@ contract DroneMadnessPresale is
     */
     function _preValidatePurchase(address _beneficiary, uint256 _weiAmount) internal {
         super._preValidatePurchase(_beneficiary, _weiAmount);
-        require(_weiAmount >= minimalInvestmentInWei);
+        require(_weiAmount >= minInvestmentInWei);
     }
 
     function setRate(uint256 _rateInWei, uint256 _cap, uint256 _minimalInvestmentInWei) public onlyOwner returns (bool) { 
@@ -73,9 +75,9 @@ contract DroneMadnessPresale is
 
         rate = _rateInWei;
         cap = _cap;
-        minimalInvestmentInWei = _minimalInvestmentInWei;
+        minInvestmentInWei = _minimalInvestmentInWei;
 
-        emit CurrentRateChange(rate, cap, minimalInvestmentInWei);
+        emit CurrentRateChange(rate, cap, minInvestmentInWei);
         return true;
     }
 
