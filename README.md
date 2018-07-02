@@ -92,6 +92,7 @@ The smart contracts are implemented in Solidity `0.4.24` using `Truffle` and `Op
 
 * [NodeJS](htps://nodejs.org), version 9+
 * [truffle](http://truffleframework.com/), which is a comprehensive framework for Ethereum development. `npm install -g truffle` — this should install Truffle v4.1.11 or better.  Check that with `truffle version`.
+* [ganache](https://truffleframework.com/ganache), test ethereum local network.
 
 ### Initialisation
 
