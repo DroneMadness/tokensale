@@ -205,37 +205,33 @@ contract('DroneMadnessCrowdsale', function(accounts) {
     describe("Airdrops and Allocations", function() { 
 
         it ('should be possible to allocate tokens to advisor', async() => { 
-
-            let advisorPool = TokenPool.at(await sale.advisorPool());
-            let cap = await advisorPool.cap();
-            console.log(advisorPool, cap);
-
             let amount1 = web3.toWei(1000, 'ether');
             let amount2 = web3.toWei(2000, 'ether');
             await sale.allocateAdvisorTokens([advisor1, advisor2], [amount1, amount2]);
             let balance1 = await token.balanceOf(advisor1);
             let balance2 = await token.balanceOf(advisor2);
-            assert.strictEqual(balance1.toNumber(), amount1.toNumber());
-            assert.strictEqual(balance2.toNumber(), amount2.toNumber());
+
+            assert.equal(balance1.toNumber(), amount1);
+            assert.equal(balance2.toNumber(), amount2);
 
             let paused = await token.paused();
             assert.isTrue(paused);
         })
 
-        /*it ('should be possible to airdrop tokens', async() => { 
+        it ('should be possible to airdrop tokens', async() => { 
             let amount = web3.toWei(100, 'ether');
             await sale.airdropTokens([airdrop1, airdrop2], amount);
             let balance1 = await token.balanceOf(airdrop1);
             let balance2 = await token.balanceOf(airdrop2);
-            assert.strictEqual(balance1.toNumber(), amount.toNumber());
-            assert.strictEqual(balance2.toNumber(), amount.toNumber());
+            assert.equal(balance1.toNumber(), amount);
+            assert.equal(balance2.toNumber(), amount);
 
             let paused = await token.paused();
             assert.isTrue(paused);
-        })*/
+        })
     })
     
-    /*describe("Funding", function() { 
+    describe("Funding", function() { 
 
         it ('should NOT be possible to purchase tokens before the crowdsale starts', async() => { 
             let amount = web3.toWei(1, 'ether');
@@ -356,5 +352,5 @@ contract('DroneMadnessCrowdsale', function(accounts) {
             let ownerBalanceAfter = (await web3.eth.getBalance(settings.fundWallet)).toNumber();
             assert.strictEqual(ownerBalanceAfter, ownerBalanceBefore + weiRaised);
         })
-    })*/
+    })
 })

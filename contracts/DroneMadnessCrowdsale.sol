@@ -120,13 +120,13 @@ contract DroneMadnessCrowdsale is
         // Create locks for team and reserve pools        
         teamWallet = new TokenTimelock(token, _teamAddress, closingTime.add(TEAM_LOCK_TIME));
         reservePool = new TokenTimelock(token, _reservePoolAdddress, closingTime.add(RESERVE_LOCK_TIME));
+        
+        // Perform initial distribution
+        uint256 tokenCap = CappedToken(token).cap();
 
         // Create airdrop and advisor pools
         advisorPool = new TokenPool(token, tokenCap.mul(ADVISOR_TOKENS).div(100));
         airdropPool = new TokenPool(token, tokenCap.mul(AIRDROP_TOKENS).div(100));
-
-        // Perform initial distribution
-        uint256 tokenCap = CappedToken(token).cap();
 
         // Distribute tokens to pools
         MintableToken(token).mint(teamWallet, tokenCap.mul(TEAM_TOKENS).div(100));
