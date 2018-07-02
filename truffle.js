@@ -1,7 +1,6 @@
 
 var HDWalletProvider = require("truffle-hdwallet-provider");
-var mnemonic = require('fs').readFileSync('./mnemonic').toString();
-var infuraKey = "";
+var wallet = JSON.parse(require('fs').readFileSync('./wallet.json'));
 const defaultGas = 4e6;
 const defaultGasPrice = 5e9;
 
@@ -16,7 +15,7 @@ module.exports = {
     },
     ropsten:{
       provider: function() {
-        return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/" + infuraKey)
+        return new HDWalletProvider(wallet.mnemonic, "https://ropsten.infura.io/" + wallet.infuraKey)
       },
       network_id: 3,
       gas: defaultGas,
@@ -24,7 +23,7 @@ module.exports = {
     },
     rinkeby: {
       provider: function() {
-        return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/" + infuraKey)
+        return new HDWalletProvider(wallet.mnemonic, "https://rinkeby.infura.io/" + wallet.infuraKey)
       },
       network_id: 4,
       gas: defaultGas,
@@ -32,17 +31,17 @@ module.exports = {
     },
     main: {
       provider: function() {
-        return new HDWalletProvider(mnemonic, "https://mainnet.infura.io/" + infuraKey)
+        return new HDWalletProvider(wallet.mnemonic, "https://mainnet.infura.io/" + wallet.infuraKey)
       },
       network_id: 1,
       gas: defaultGas,
       gasPrice: defaultGasPrice
     }   
-  }/*,  
+  },  
   solc: {
     optimizer: {
       enabled: true,
       runs: 200
     }
-  }*/
+  }
 };
