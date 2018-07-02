@@ -9,6 +9,10 @@
   "scripts": {
     "ganache": "ganache-cli --defaultBalanceEther 500",
     "test": "truffle test",
+    "test:token": "truffle test test/DroneMadnessToken.test.js",
+    "test:sale": "truffle test test/DroneMadnessCrowdsale.test.js",
+    "test:presale": "truffle test test/DroneMadnessPresale.test.js",
+    "deploy:ropsten": "truffle migrate --network ropsten",
     "console": "truffle console"
   },
   "repository": {
