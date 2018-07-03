@@ -1,6 +1,7 @@
 const assertThrows = require("./utils/assertThrows.js");
 const timeTravel = require("./utils/timeTravel.js");
 const TokenPool = artifacts.require('./TokenPool.sol')
+const TokenTimelock = artifacts.require('./zeppelin/token/ERC20/TokenTimelock.sol')
 const DroneMadnessToken = artifacts.require('./DroneMadnessToken.sol')
 const DroneMadnessCrowdsale = artifacts.require('./DroneMadnessCrowdsale.sol')
 
@@ -134,41 +135,7 @@ contract('DroneMadnessCrowdsale', function(accounts) {
             
             pausedState = await sale.paused();
             assert.strictEqual(false, pausedState);
-        })
-        
-        it ('should be possible to update the rate prior to the crowdsale', async() => { 
-            let currentRate = await sale.rate();
-
-            let newRate = 1500;
-            let newCap = 120e18;
-            let tx = await sale.setRate(newRate, newCap);
-            
-            assert.strictEqual('InitialRateChange', tx.logs[0].event);
-            assert.strictEqual(newRate, tx.logs[0].args.rate.toNumber());
-            
-            let updatedRate = await sale.rate();
-            assert.strictEqual(newRate, updatedRate.toNumber());
-
-            let updatedCap = await sale.cap();
-            assert.strictEqual(newCap, updatedCap.toNumber());
-        })
-        
-        it ('should NOT be possible to update the rate by anyone else but the owner', async() => { 
-            
-            let newRate = 1500;
-            let newCap = 120e18;
-            let currentRate = await sale.rate();
-            await assertThrows(sale.setRate(newRate, newCap, {from: user1}));
-            let reRate = await sale.rate();
-            assert.strictEqual(currentRate.toNumber(), reRate.toNumber());
-        })
-
-        it ('should be possible to reset original rate', async() => { 
-            
-            let originalRate = settings.crowdsaleRate;
-            let originalCap = settings.crowdsaleCap;
-            await sale.setRate(originalRate, originalCap, {from: owner});
-        })
+        })     
     })
 
     describe("Whitelist", function() {
@@ -253,6 +220,15 @@ contract('DroneMadnessCrowdsale', function(accounts) {
             await sale.sendTransaction({value: amount, from: whitelistedUser, gas: 2000000});
             let balanceAfter = (await token.balanceOf(whitelistedUser)).toNumber();
             assert.equal(balanceAfter, balanceBefore + tokensAmount);
+        })
+
+        it ('should NOT be possible to transfer funds before the crowdsale end', async() => { 
+            let balanceSource = (await token.balanceOf(whitelistedUser)).toNumber();
+            assert.isAbove(balanceSource, 0);
+            let balanceBefore = (await token.balanceOf(user1)).toNumber();
+            await assertThrows(token.transfer(user1, balanceSource, {from: whitelistedUser}));
+            let balanceAfter = (await token.balanceOf(user1)).toNumber();
+            assert.strictEqual(balanceAfter, balanceBefore);
         })
 
         it ('should NOT be possible NOT whitelisted user to purchase tokens during crowdsale', async() => { 
@@ -351,6 +327,65 @@ contract('DroneMadnessCrowdsale', function(accounts) {
             let weiRaised = (await sale.weiRaised()).toNumber();
             let ownerBalanceAfter = (await web3.eth.getBalance(settings.fundWallet)).toNumber();
             assert.strictEqual(ownerBalanceAfter, ownerBalanceBefore + weiRaised);
+        })
+
+        it ('should be possible to transfer funds after the crowdsale end', async() => { 
+            let balanceSource = (await token.balanceOf(whitelistedUser)).toNumber();
+            let balanceBefore = (await token.balanceOf(user1)).toNumber();
+            await token.transfer(user1, balanceSource, {from: whitelistedUser});
+            let balanceAfter = (await token.balanceOf(user1)).toNumber();
+            assert.strictEqual(balanceAfter, balanceBefore + balanceSource);
+        })
+
+        it ('should be possible to perform airdrops after the crowdsale end', async() => { 
+            let paused = await token.paused();
+            assert.isFalse(paused);
+
+            let airdropPoolAddress = await sale.airdropPool();
+            let airdropPool = TokenPool.at(airdropPoolAddress);
+
+            let amount = Number(web3.toWei(100, 'ether'));
+            let balanceBefore1 = (await token.balanceOf(airdrop1)).toNumber();
+            let balanceBefore2 = (await token.balanceOf(airdrop2)).toNumber();
+
+            await airdropPool.allocateEqual([airdrop1, airdrop2], amount);
+
+            let balanceAfter1 = (await token.balanceOf(airdrop1)).toNumber();
+            let balanceAfter2 = (await token.balanceOf(airdrop2)).toNumber();
+
+            assert.equal(balanceAfter1, balanceBefore1 + amount);
+            assert.equal(balanceAfter2, balanceBefore2 + amount);
+        })
+    })
+
+    describe("Timelock", function() { 
+
+        it ('should NOT be possible to use timelocked funds before their time', async() => {
+            let teamWalletAddress = await sale.teamWallet();
+            let teamWallet = TokenTimelock.at(teamWalletAddress);
+            let releaseTime = (await teamWallet.releaseTime()).toNumber();
+            assert.isBelow(currentTime, releaseTime);
+            await assertThrows(teamWallet.release());
+        })
+
+        it ('should be possible to use timelocked funds after their time', async() => {
+
+            let teamWalletAddress = await sale.teamWallet();
+            let teamWallet = TokenTimelock.at(teamWalletAddress);
+            let teamBalance = await token.balanceOf(teamWalletAddress);
+            let releaseTime = (await teamWallet.releaseTime()).toNumber();
+
+            // Time travel to 1 hour after the unlock time
+            let travelSeconds = releaseTime - currentTime + 3600;
+            timeTravel(travelSeconds);
+            currentTime += travelSeconds;
+            
+            assert.isAbove(currentTime, releaseTime);
+
+            let balanceBefore = (await token.balanceOf(settings.teamWallet)).toNumber();
+            await teamWallet.release();
+            let balanceAfter = (await token.balanceOf(settings.teamWallet)).toNumber();
+            assert.equal(balanceAfter, balanceBefore + teamBalance);
         })
     })
 })
