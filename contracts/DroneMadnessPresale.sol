@@ -8,9 +8,12 @@ import "./zeppelin/crowdsale/validation/TimedCrowdsale.sol";
 import "./zeppelin/crowdsale/validation/CappedCrowdsale.sol";
 /**
  * @title Drone Madness Presale Contract
- * @dev Drone Madness Presale Contract ...
- *
- * Add details ...
+ * @dev Drone Madness Presale Contract
+ * The contract is for the private sale of the Drone Madness token. It is:
+ * - With a hard cap in ETH
+ * - Limited in time (start/end date)
+ * - Only for whitelisted participants to purchase tokens
+ * - Tokens are minted on each purchase
  */
 contract DroneMadnessPresale is 
     MintedCrowdsale,
@@ -22,17 +25,8 @@ contract DroneMadnessPresale is
     // Min investment
     uint256 public minInvestmentInWei;
     
+    // Investments
     mapping (address => uint256) internal invested;
-
-    // Events for this contract
-
-    /**
-     * Event triggered when changing the current rate on different stages
-     * @param rate new rate
-     * @param cap new cap
-     * @param minInvestmentInWei new minInvestmentInWei
-     */
-    event CurrentRateChange(uint256 rate, uint256 cap, uint256 minInvestmentInWei);
 
     /**
      * @dev Contract constructor
@@ -58,30 +52,20 @@ contract DroneMadnessPresale is
     }
 
     /**
-    * @dev Extend parent behavior requiring purchase to respect the funding cap.
-    * @param _beneficiary Token purchaser
-    * @param _weiAmount Amount of wei contributed
+    * @dev Validate min investment amount
+    * @param _beneficiary address token purchaser
+    * @param _weiAmount uint256 amount of wei contributed
     */
     function _preValidatePurchase(address _beneficiary, uint256 _weiAmount) internal {
         super._preValidatePurchase(_beneficiary, _weiAmount);
         require(_weiAmount >= minInvestmentInWei);
     }
 
-    function setRate(uint256 _rateInWei, uint256 _cap, uint256 _minimalInvestmentInWei) public onlyOwner returns (bool) { 
-        require(openingTime > block.timestamp);
-        require(_rateInWei > 0);
-        require(_cap > 0);
-        require(_minimalInvestmentInWei > 0);
-
-        rate = _rateInWei;
-        cap = _cap;
-        minInvestmentInWei = _minimalInvestmentInWei;
-
-        emit CurrentRateChange(rate, cap, minInvestmentInWei);
-        return true;
-    }
-
-    function transferTokenOwnership(address newOner) onlyOwner public { 
-        Ownable(token).transferOwnership(newOner);
+    /**
+    * @dev Transfer the ownership of the token conctract 
+    * @param _newOwner address the new owner of the token
+    */
+    function transferTokenOwnership(address _newOwner) onlyOwner public { 
+        Ownable(token).transferOwnership(_newOwner);
     }
 }

@@ -6,8 +6,9 @@ import "./zeppelin/token/ERC20/PausableToken.sol";
 /**
  * @title Drone Madness Token
  * @dev Drone Madness Token - Token code for the Drone Madness Project
- *
- * Add details ...
+ * This is a standard ERC20 token with:
+ * - a cap
+ * - ability to pause transfers
  */
 contract DroneMadnessToken is CappedToken, PausableToken {
 

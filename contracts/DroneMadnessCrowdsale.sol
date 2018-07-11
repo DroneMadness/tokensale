@@ -11,11 +11,19 @@ import "./zeppelin/crowdsale/validation/CappedCrowdsale.sol";
 import "./zeppelin/crowdsale/distribution/FinalizableCrowdsale.sol";
 import "./zeppelin/crowdsale/distribution/RefundableCrowdsale.sol";
 
-/**
+ /**
  * @title Drone Madness Crowdsale Contract
- * @dev Drone Madness Crowdsale Contract ...
- *
- * Add details ...
+ * @dev Drone Madness Crowdsale Contract
+ * The contract is for the crowdsale of the Drone Madness token. It is:
+ * - With a hard cap in ETH
+ * - With a soft cap in ETH
+ * - Limited in time (start/end date)
+ * - Only for whitelisted participants to purchase tokens
+ * - Ether is securely stored in RefundVault until the end of the crowdsale
+ * - At the end of the crowdsale if the goal is reached funds can be used
+ * ...otherwise the participants can refund their investments
+ * - Tokens are minted on each purchase
+ * - Sale can be paused if needed by the admin
  */
 contract DroneMadnessCrowdsale is 
     MintedCrowdsale,
@@ -75,6 +83,8 @@ contract DroneMadnessCrowdsale is
      * @param _openingTime uint256 crowdsale start date/time
      * @param _closingTime uint256 crowdsale end date/time
      * @param _rate uint256 initial rate DRNMD for 1 ETH
+     * @param _minInvestmentInWei uint256 minimum investment amount
+     * @param _maxInvestmentInWei uint256 maximum individual investment amount
      * @param _wallet address address where the collected funds will be transferred
      * @param _token DroneMadnessToken our token
      */
@@ -98,6 +108,12 @@ contract DroneMadnessCrowdsale is
         maxInvestmentInWei = _maxInvestmentInWei;
     }
 
+    /**
+     * @dev Perform the initial token distribution according to the Drone Madness crowdsale rules
+     * @param _teamAddress address address for the team tokens
+     * @param _prizePoolAddress address address for the prize pool
+     * @param _reservePoolAdddress address address for the reserve pool
+     */
     function doInitialDistribution(
         address _teamAddress,
         address _prizePoolAddress,
@@ -125,6 +141,13 @@ contract DroneMadnessCrowdsale is
         assert(tokenCap.sub(token.totalSupply()) == tokenCap.mul(SALE_TOKENS).div(100));
     }
 
+    /**
+    * @dev Update the current rate based on the scheme
+    * 1st of Sep - 30rd of Sep -> 30% Bonus
+    * 1st of Oct - 31st of Oct -> 20% Bonus
+    * 1st of Nov - 30rd of Oct -> 10% Bonus
+    * 1st of Dec - 31st of Dec -> 0% Bonus
+    */
     function updateRate() external onlyOwner {
         uint256 i = stages.length;
         while (i-- > 0) {
@@ -136,26 +159,40 @@ contract DroneMadnessCrowdsale is
         }
     }
 
+    /**
+    * @dev Perform an airdrop from the airdrop pool to multiple beneficiaries
+    * @param _beneficiaries address[] list of beneficiaries
+    * @param _amount uint256 amount to airdrop
+    */
     function airdropTokens(address[] _beneficiaries, uint256 _amount) external onlyOwner {
         PausableToken(token).unpause();
         airdropPool.allocateEqual(_beneficiaries, _amount);
         PausableToken(token).pause();
     }
 
+    /**
+    * @dev Transfer tokens to advisors from the advisor's pool
+    * @param _beneficiaries address[] list of beneficiaries
+    * @param _amounts uint256[] amounts to airdrop
+    */
     function allocateAdvisorTokens(address[] _beneficiaries, uint256[] _amounts) external onlyOwner {
         PausableToken(token).unpause();
         advisorPool.allocate(_beneficiaries, _amounts);
         PausableToken(token).pause();
     }
 
-    function transferTokenOwnership(address newOner) onlyOwner public { 
-        Ownable(token).transferOwnership(newOner);
+    /**
+    * @dev Transfer the ownership of the token conctract 
+    * @param _newOwner address the new owner of the token
+    */
+    function transferTokenOwnership(address _newOwner) onlyOwner public { 
+        Ownable(token).transferOwnership(_newOwner);
     }
 
     /**
-    * @dev Extend parent behavior requiring purchase to respect the funding cap.
-    * @param _beneficiary Token purchaser
-    * @param _weiAmount Amount of wei contributed
+    * @dev Validate min and max amounts and other purchase conditions
+    * @param _beneficiary address token purchaser
+    * @param _weiAmount uint256 amount of wei contributed
     */
     function _preValidatePurchase(address _beneficiary, uint256 _weiAmount) internal {
         super._preValidatePurchase(_beneficiary, _weiAmount);
@@ -165,15 +202,21 @@ contract DroneMadnessCrowdsale is
     }
 
     /**
-    * @dev Override for extensions that require an internal state to check for validity (current user contributions, etc.)
-    * @param _beneficiary Address receiving the tokens
-    * @param _weiAmount Value in wei involved in the purchase
+    * @dev Update invested amount
+    * @param _beneficiary address receiving the tokens
+    * @param _weiAmount uint256 value in wei involved in the purchase
     */
     function _updatePurchasingState(address _beneficiary, uint256 _weiAmount) internal {
         super._updatePurchasingState(_beneficiary, _weiAmount);
         invested[_beneficiary] = invested[_beneficiary].add(_weiAmount);
     }
 
+     /**
+    * @dev Perform crowdsale finalization. 
+    * - Finish token minting
+    * - Enable transfers
+    * - Give back the token ownership to the admin
+    */
     function finalization() internal {
         DroneMadnessToken dmToken = DroneMadnessToken(token);
         dmToken.finishMinting();
