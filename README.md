@@ -1,4 +1,4 @@
-# Drone Madness Token and Sale contracts
+# Drone Madness Token and Sale Contracts
 
 This projects defines several contracts related to the token sale of the Drone Madness token.
 The token is standard `ERC20` `Ethereum` based and is written in `Solidity`. 
@@ -33,8 +33,9 @@ All contracts depend on the `OpenZeppelin` framework.
 |-----------------------|-------------------------------|
 | Supply             	| 2,400,000 DRNMD               |
 | Rate               	| 750 DRNMD / 1 ETH             |
-| Minimum investment   	| 0.1 ETH                      	|
-| Whitelist         	| Yes                        	|
+| Minimum investment   	| 0.1 ETH                       |
+| Allow Modifying       | No							|
+| Whitelist/KYC         | Yes                           |
 | Start date         	| 1 August, 2018 09:00 GMT  	|
 | End date           	| 31 August, 2018 09:00 GMT 	|
 
@@ -55,8 +56,8 @@ Parameters
 | Soft Cap             	| 250 ETH                       |
 | Rate                  | `See the table below`         |
 | Individual cap       	| 100 ETH                      	|
-| Minimum investment   	| 0.1 ETH                      	|
-| Allow Modifying       | Yes							|
+| Minimum investment   	| 0.05 ETH                     	|
+| Allow Modifying       | No							|
 | Whitelist/KYC         | Yes                           |
 | Start date         	| 1 September, 2018 09:00 GMT  	|
 | End date           	| 31 December, 2018 09:00 GMT 	|

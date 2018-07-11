@@ -13,6 +13,7 @@
     "test:sale": "truffle test test/DroneMadnessCrowdsale.test.js",
     "test:presale": "truffle test test/DroneMadnessPresale.test.js",
     "deploy:ropsten": "truffle migrate --network ropsten",
+    "compile-flat": "truffle-flattener contracts/DroneMadnessToken.sol contracts/DroneMadnessCrowdsale.sol contracts/DroneMadnessPresale.sol > flat/drnmd.sol",
     "console": "truffle console"
   },
   "repository": {
@@ -27,7 +28,7 @@
     "security",
     "erc20"
   ],
-  "author": "Galin Dinkov <info@galindinkov.com>",
+  "author": "Galin Dinkov <galin@cryptovarna.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/DroneMadness/tokensale/issues"

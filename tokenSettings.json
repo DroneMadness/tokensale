@@ -11,7 +11,7 @@
     "presaleMinInvestmentInWei" : 0.1e18,
 
     "crowdsaleCap" : 3600e18,
-    "crowdsaleGoal" : 50e18,
+    "crowdsaleGoal" : 250e18,
     "crowdsaleOpeningTime" : 1535760000, 
     "crowdsaleClosingTime" : 1546300740,
     "crowdsaleRate" : 500,
