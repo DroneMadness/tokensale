@@ -63,24 +63,10 @@ contract DroneMadnessCrowdsale is
     // Events for this contract
 
     /**
-     * Event triggered when changing the initial rate
-     * @param rate new rate
-     * @param cap new cap
-     */
-    event InitialRateChange(uint256 rate, uint256 cap);
-
-    /**
      * Event triggered when changing the current rate on different stages
      * @param rate new rate
      */
     event CurrentRateChange(uint256 rate);
-
-    /**
-     * Event triggered when sale dates changed
-     * @param openingTime crowdsale start date/time
-     * @param closingTime crowdsale end date/time
-     */
-    event InitialDateChange(uint256 openingTime, uint256 closingTime);
 
     /**
      * @dev Contract constructor
@@ -160,19 +146,6 @@ contract DroneMadnessCrowdsale is
         PausableToken(token).unpause();
         advisorPool.allocate(_beneficiaries, _amounts);
         PausableToken(token).pause();
-    }
-
-    function setRate(uint256 _rateInWei, uint256 _cap) public onlyOwner returns (bool) { 
-        require(openingTime > block.timestamp);
-        require(_rateInWei > 0);
-        require(_cap > 0);
-
-        initialRate = _rateInWei;
-        rate = _rateInWei;
-        cap = _cap;
-
-        emit InitialRateChange(rate, cap);
-        return true;
     }
 
     function transferTokenOwnership(address newOner) onlyOwner public { 
