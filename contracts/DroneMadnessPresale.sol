@@ -48,7 +48,7 @@ contract DroneMadnessPresale is
         Crowdsale(_rate, _wallet, _token)
         CappedCrowdsale(_cap)
         TimedCrowdsale(_openingTime, _closingTime) public {
-        _minInvestmentInWei = minInvestmentInWei;
+        minInvestmentInWei = _minInvestmentInWei;
     }
 
     /**

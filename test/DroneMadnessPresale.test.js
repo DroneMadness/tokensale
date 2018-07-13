@@ -54,52 +54,15 @@ contract('DroneMadnessPresale', function(accounts) {
             let cap = await sale.cap();
             assert.strictEqual(cap.toNumber(), settings.presaleCap);
         })
+
+        it ('should have a minimum investment set correctly', async() => { 
+            let minInvestmentInWei = await sale.minInvestmentInWei();
+            assert.strictEqual(minInvestmentInWei.toNumber(), settings.presaleMinInvestmentInWei);
+        })
     })
     
     describe("State changes", function() {
-        
-        it ('should be possible to update the rate prior to the presale', async() => { 
-            let currentRate = await sale.rate();
 
-            let newRate = 1500;
-            let newCap = 120e18;
-            let newMinInvestment = 1e18;
-            let tx = await sale.setRate(newRate, newCap, newMinInvestment);
-            
-            assert.strictEqual('CurrentRateChange', tx.logs[0].event);
-            assert.strictEqual(newRate, tx.logs[0].args.rate.toNumber());
-            assert.strictEqual(newCap, tx.logs[0].args.cap.toNumber());
-            assert.strictEqual(newMinInvestment, tx.logs[0].args.minInvestmentInWei.toNumber());
-            
-            let updatedRate = await sale.rate();
-            assert.strictEqual(newRate, updatedRate.toNumber());
-
-            let updatedCap = await sale.cap();
-            assert.strictEqual(newCap, updatedCap.toNumber());
-
-            let updatedMinInvestment = await sale.minInvestmentInWei();
-            assert.strictEqual(newMinInvestment, updatedMinInvestment.toNumber());
-        })
-        
-        it ('should NOT be possible to update the rate by anyone else but the owner', async() => { 
-            
-            let newRate = 1500;
-            let newCap = 120e18;
-            let newMinInvestment = 1e18;
-            let currentRate = await sale.rate();
-            await assertThrows(sale.setRate(newRate, newCap, newMinInvestment, {from: user1}));
-            let reRate = await sale.rate();
-            assert.strictEqual(currentRate.toNumber(), reRate.toNumber());
-        })
-
-        it ('should be possible to reset original rate', async() => { 
-            
-            let originalRate = settings.presaleRate;
-            let originalCap = settings.presaleCap;
-            let originalMinInvestment = 0.05e18;
-            await sale.setRate(originalRate, originalCap, originalMinInvestment, {from: owner});
-        })
-        
         it ('should be possible to transfer token ownership to this contract address', async() => { 
             
             let tx = await token.transferOwnership(sale.address);
@@ -154,7 +117,8 @@ contract('DroneMadnessPresale', function(accounts) {
             timeTravel(travelSeconds);
             currentTime += travelSeconds;
 
-            let amount = web3.toWei(1, 'ether');
+            let minInvestment = (await sale.minInvestmentInWei()).toNumber();
+            let amount = minInvestment;
             let rate = (await sale.rate()).toNumber();
             let tokensAmount = amount * rate;
 
@@ -170,7 +134,7 @@ contract('DroneMadnessPresale', function(accounts) {
         })
 
         it ('should NOT be possible NOT whitelisted user to purchase tokens during presale', async() => { 
-            let amount = web3.toWei(1, 'ether');
+            let amount = (await sale.minInvestmentInWei()).toNumber();
             await assertThrows(sale.sendTransaction({value: amount, from: notlistedUser, gas: 2000000}));
         })
 

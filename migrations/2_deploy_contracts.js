@@ -44,7 +44,7 @@ module.exports = function(deployer, network, accounts) {
                 settings.presaleOpeningTime, 
                 settings.presaleClosingTime, 
                 settings.presaleRate, 
-                settings.crowdsaleMinInvestmentInWei,
+                settings.presaleMinInvestmentInWei,
                 settings.fundWallet, 
                 token.address);
         })

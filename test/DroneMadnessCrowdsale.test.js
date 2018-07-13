@@ -275,10 +275,10 @@ contract('DroneMadnessCrowdsale', function(accounts) {
         it ('should update rates correctly in time', async() => { 
             let bonuses = [30,20,10,0];
             let stages = [
-                1535760000, // 1st of Sep - 30rd of Sep -> 30% Bonus
-                1538352000, // 1st of Oct - 31st of Oct -> 20% Bonus
-                1541030400, // 1st of Nov - 30rd of Oct -> 10% Bonus
-                1543622400  // 1st of Dec - 31st of Dec -> 0% Bonus
+                1535792400, // 1st of Sep - 30rd of Sep -> 30% Bonus
+                1538384400, // 1st of Oct - 31st of Oct -> 20% Bonus
+                1541066400, // 1st of Nov - 30rd of Oct -> 10% Bonus
+                1543658400  // 1st of Dec - 31st of Dec -> 0% Bonus
             ]; 
 
             let initialRate = (await sale.initialRate()).toNumber();
