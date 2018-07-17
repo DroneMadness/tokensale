@@ -1,6 +1,0 @@
-DroneMadnessToken.deployed().then(inst => token = inst)
-DroneMadnessPresale.deployed().then(inst2 => presale = inst2)
-DroneMadnessCrowdsale.deployed().then(inst3 => sale = inst3)
-
-owner = web3.eth.accounts[0]
-user1 = web3.eth.accounts[1]

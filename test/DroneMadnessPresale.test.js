@@ -40,12 +40,12 @@ contract('DroneMadnessPresale', function(accounts) {
     
     describe("Initial settings", function() {
 
-        it ('should start on 1st of August 2018 (first block after) 00:00 GMT', async() => { 
+        it ('should start on 1st of August 2018 (first block after) 09:00 GMT', async() => { 
             let openingTime = await sale.openingTime();
             assert.strictEqual(openingTime.toNumber(), settings.presaleOpeningTime);
         })
 
-        it ('should end on 31st of August 2018 (first block after) 23:59 GMT', async() => { 
+        it ('should end on 31st of August 2018 (first block after) 09:00 GMT', async() => { 
             let closingTime = await sale.closingTime();
             assert.strictEqual(closingTime.toNumber(), settings.presaleClosingTime);
         })

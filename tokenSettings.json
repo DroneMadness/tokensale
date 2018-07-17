@@ -18,8 +18,8 @@
     "crowdsaleMinInvestmentInWei" : 0.05e18,
     "crowdsaleMaxInvestmentInWei" : 100e18,
 
-    "fundWallet" : "0x5fec163e04d335edc0cd52b29f42cac765e73719",
-    "teamWallet" : "0x3dc955e7a7938b77059b9c9892eb94e309fefa99",
-    "prizePool" : "0x165d6b7d7d8510abdc70d62a62a67c46f6b20c2d",
-    "reservePool" : "0x6ae17e7bf0d59796079d88e506180077672875a8"
+    "fundWallet" : "0xF9dF7b00C69005bbF82C53C0b542ef1E5E065799",
+    "teamWallet" : "0xB224417c86b104Da65AcCD9Ca1C2925b4c6e9a93",
+    "prizePool" : "0x9b743F461CF24EE1cf1072D0B6077272Ef8c22a7",
+    "reservePool" : "0x6F41343E2FC1564041Da5eD3B92ad6CB7Ce5870c"
 }
