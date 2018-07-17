@@ -2,7 +2,7 @@
 var HDWalletProvider = require("truffle-hdwallet-provider");
 var wallet = JSON.parse(require('fs').readFileSync('./wallet.json'));
 const defaultGas = 4e6;
-const defaultGasPrice = 5e9;
+const defaultGasPrice = 12e9;
 
 module.exports = {
   networks: {
@@ -15,7 +15,7 @@ module.exports = {
     },
     ropsten:{
       provider: function() {
-        return new HDWalletProvider(wallet.mnemonic, "https://ropsten.infura.io/" + wallet.infuraKey)
+        return new HDWalletProvider(wallet.mnemonic, "https://ropsten.infura.io/" + wallet.infuraKey, wallet.addressIndex)
       },
       network_id: 3,
       gas: defaultGas,
@@ -23,7 +23,7 @@ module.exports = {
     },
     rinkeby: {
       provider: function() {
-        return new HDWalletProvider(wallet.mnemonic, "https://rinkeby.infura.io/" + wallet.infuraKey)
+        return new HDWalletProvider(wallet.mnemonic, "https://rinkeby.infura.io/" + wallet.infuraKey, wallet.addressIndex)
       },
       network_id: 4,
       gas: defaultGas,
@@ -31,7 +31,7 @@ module.exports = {
     },
     main: {
       provider: function() {
-        return new HDWalletProvider(wallet.mnemonic, "https://mainnet.infura.io/" + wallet.infuraKey)
+        return new HDWalletProvider(wallet.mnemonic, "https://mainnet.infura.io/" + wallet.infuraKey, wallet.addressIndex)
       },
       network_id: 1,
       gas: defaultGas,
