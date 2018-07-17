@@ -1,0 +1,31 @@
+Using network 'main'.
+
+Running migration: 1_initial_migration.js
+  Deploying Migrations...
+  ... 0xa8f8edb88e84c492a34ab48052e93753f767174f194080398a10393c952fcaad
+  Migrations: 0x7e9ffa25287422610e2b8fff51596e443a6da003
+Saving successful migration to network...
+  ... 0x3f9b0ef84bcc9c7b90d3d27962fd96cf881d7f3ee224aaf366d147f003437ccb
+Saving artifacts...
+Running migration: 2_deploy_contracts.js
+  Deploying SafeMath...
+  ... 0xe393ec1b39fb53d76bbc083b97a1b7857760eb28c3bed84d54e8b859bf126882
+  SafeMath: 0x7f4592d0bdc36c67566b65cf40f21435a885094e
+  Deploying DroneMadnessToken...
+  ... 0xf2cd509d7cc43a62c17b93f872126ca86a40fd8b281be76685bfbca347e6b3b4
+  DroneMadnessToken: 0xa10619e97b0fc75355daa2de14a52d8b18074541
+  Deploying DroneMadnessCrowdsale...
+  ... 0x20a6f71aa90236977fe6d89c4376b0c8ff500c77d7f3aa964ecaa66dcb5f9351
+  DroneMadnessCrowdsale: 0xec5cdd65f7c437cf88531089e6fe413d6e39f03d
+  ... 0x33f7117545f9d28d07f111a3465ef8c07d1e11a431213c1b7a36e150d415a494
+  ... 0x7b2258ee8d930b0eb1988d569eb44660521ed93bc34338b9ae1afadc231a0b02
+  Deploying DroneMadnessPresale...
+  ... 0x907f4b4623ed56bef49617df533967855202aad61ae19bef02a6e4b1cbc65db4
+  DroneMadnessPresale: 0x637eb61afedee3d1a3bdb20ffa335fef8563e212
+  ... 0xce37711d9d5aaa71cbd7273fe244368697c95a649dda777af13a8943f14ffa5e
+Saving successful migration to network...
+  ... 0x2354d92e4a5f3a5f1df2b8d49c16c01afdb4882b43434fc17b3bfb65d474e2b6
+Saving artifacts...
+
+
+
